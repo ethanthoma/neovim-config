@@ -1,0 +1,2 @@
+# ignore generated packer code
+packer_compiled.lua
