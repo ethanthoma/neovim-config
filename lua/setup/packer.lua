@@ -5,15 +5,32 @@ return require('packer').startup(function(use)
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
 
-    -- Fuzzy file finder
+    -- Navigation and finding
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.0',
         requires = { {'nvim-lua/plenary.nvim'} }
     }
+    use 'theprimeagen/harpoon'
+    use 'christoomey/vim-tmux-navigator'
+    use 'tpope/vim-vinegar'
 
-    -- Theme
+    -- Prettier
     use { 'rose-pine/neovim', as = 'rose-pine' }
     vim.cmd('colorscheme rose-pine')
+    use {
+        "folke/trouble.nvim",
+        config = function()
+            require("trouble").setup {
+                use_diagnostic_signs = true
+            }
+        end
+    }
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+    }
+    use 'prichrd/netrw.nvim'
+    use 'nvim-tree/nvim-web-devicons'
 
     -- Treesitter
     use {
@@ -21,62 +38,50 @@ return require('packer').startup(function(use)
         run = function()
             local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
             ts_update()
-        end,}
-        use 'nvim-treesitter/playground'
-        use 'nvim-treesitter/nvim-treesitter-context'
+        end
+    }
+    use 'nvim-treesitter/playground'
+    use 'nvim-treesitter/nvim-treesitter-context'
 
-        -- Version control
-        use 'mbbill/undotree'
+    -- Version control
+    use 'mbbill/undotree'
 
-        -- File navigation
-        use 'theprimeagen/harpoon'
+    -- Git commands
+    use 'tpope/vim-fugitive'
+    use 'ThePrimeagen/git-worktree.nvim'
 
-        -- Prettier netrw
-        use 'prichrd/netrw.nvim'
-        use 'nvim-tree/nvim-web-devicons'
-        -- Better netrw navigation
-        use 'tpope/vim-vinegar'
+    -- Auto saving
+    use 'tpope/vim-obsession'
 
-        -- Git commands
-        use 'tpope/vim-fugitive'
+    -- LSP
+    use {
+        'VonHeikemen/lsp-zero.nvim',
+        branch = 'v2.x',
+        requires = {
+            -- LSP Support
+            {'neovim/nvim-lspconfig'},
+            {'williamboman/mason.nvim'},
+            {'williamboman/mason-lspconfig.nvim'},
 
-        -- Auto saving
-        use 'tpope/vim-obsession'
+            -- Autocompletion
+            {'hrsh7th/nvim-cmp'},
+            {'hrsh7th/cmp-buffer'},
+            {'hrsh7th/cmp-path'},
+            {'saadparwaiz1/cmp_luasnip'},
+            {'hrsh7th/cmp-nvim-lsp'},
+            {'hrsh7th/cmp-nvim-lua'},
 
-        -- LSP
-        use {
-            'VonHeikemen/lsp-zero.nvim',
-            branch = 'v1.x',
-            requires = {
-                -- LSP Support
-                {'neovim/nvim-lspconfig'},
-                {'williamboman/mason.nvim'},
-                {'williamboman/mason-lspconfig.nvim'},
+            -- Snippets
+            {'L3MON4D3/LuaSnip'},
+            {'rafamadriz/friendly-snippets'},
 
-                -- Autocompletion
-                {'hrsh7th/nvim-cmp'},
-                {'hrsh7th/cmp-buffer'},
-                {'hrsh7th/cmp-path'},
-                {'saadparwaiz1/cmp_luasnip'},
-                {'hrsh7th/cmp-nvim-lsp'},
-                {'hrsh7th/cmp-nvim-lua'},
-
-                -- Snippets
-                {'L3MON4D3/LuaSnip'},
-                {'rafamadriz/friendly-snippets'},
-            }
+            -- Telescope extensions
+            {'nvim-telescope/telescope-frecency.nvim'},
+            {'nvim-telescope/telescope-media-files.nvim'},
         }
+    }
 
-        -- Prettier
-        use {
-            "folke/trouble.nvim",
-            config = function()
-                require("trouble").setup {
-                }
-            end
-        }
-
-        -- Install R terminal
-        use 'jalvesaq/Nvim-R'
-    end)
+    -- Install R terminal
+    use 'jalvesaq/Nvim-R'
+end)
 
