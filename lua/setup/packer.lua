@@ -13,6 +13,7 @@ return require('packer').startup(function(use)
     use 'theprimeagen/harpoon'
     use 'christoomey/vim-tmux-navigator'
     use 'tpope/vim-vinegar'
+    use 'jghauser/mkdir.nvim'
 
     -- Prettier
     use { 'rose-pine/neovim', as = 'rose-pine' }
@@ -30,7 +31,14 @@ return require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     }
     use 'prichrd/netrw.nvim'
-    use 'nvim-tree/nvim-web-devicons'
+    use 'sunjon/shade.nvim'
+    use 'winston0410/range-highlight.nvim'
+    use {
+        'brenoprata10/nvim-highlight-colors',
+        config = function()
+            require('nvim-highlight-colors').setup {}
+        end
+    }
 
     -- Treesitter
     use {
@@ -49,6 +57,13 @@ return require('packer').startup(function(use)
     -- Git commands
     use 'tpope/vim-fugitive'
     use 'ThePrimeagen/git-worktree.nvim'
+    use 'f-person/git-blame.nvim'
+    use {
+        'lewis6991/gitsigns.nvim',
+        config = function()
+            require('gitsigns').setup {}
+        end
+    }
 
     -- Auto saving
     use 'tpope/vim-obsession'
@@ -79,6 +94,12 @@ return require('packer').startup(function(use)
             {'nvim-telescope/telescope-frecency.nvim'},
             {'nvim-telescope/telescope-media-files.nvim'},
         }
+    }
+    use {
+        'gelguy/wilder.nvim',
+        config = function()
+            -- config goes here
+        end,
     }
 
     -- Install R terminal
