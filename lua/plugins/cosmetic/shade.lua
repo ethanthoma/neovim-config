@@ -1,0 +1,4 @@
+return {
+	'sunjon/shade.nvim'
+}
+
