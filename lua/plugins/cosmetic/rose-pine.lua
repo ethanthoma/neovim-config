@@ -4,6 +4,7 @@ return {
         require('rose-pine').setup({
             variant = 'moon',
             disable_background = true,
+            disable_float_background = true,
             highlight_groups = {
                 TelescopeBorder = { fg = "highlight_high", bg = "none" },
                 TelescopeNormal = { bg = "none" },
