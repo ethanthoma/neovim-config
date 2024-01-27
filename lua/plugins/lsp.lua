@@ -41,16 +41,31 @@ return {
             vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
         end)
 
-        local lsp_configurations = require('lspconfig.configs')
-        lsp_configurations.nixos_lua_lsp = {
-            default_config = {
-                name = 'nixos-lua-language-server',
-                cmd = {'lua-language-server'},
-                filetypes = {'lua'},
-                root_dir = require('lspconfig.util').root_pattern('init.lua')
-            }
-        }
-        require('lspconfig').nixos_lua_lsp.setup({})
+        if vim.loop.os_uname().sysname == "Linux" then
+            local command = [[
+                source /etc/os-release;
+                echo $NAME
+            ]]
+            local handle = io.popen(command)
+            if handle ~= nil then
+                local distro = handle:read("*a");
+
+                if distro:match("NixOS") ~= nil and vim.fn.executable('lua-language-server') == 1 then
+                    local lsp_configurations = require('lspconfig.configs')
+                    lsp_configurations.nixos_lua_lsp = {
+                        default_config = {
+                            name = 'nixos-lua-language-server',
+                            cmd = {'lua-language-server'},
+                            filetypes = {'lua'},
+                            root_dir = require('lspconfig.util').root_pattern('init.lua')
+                        }
+                    }
+                    require('lspconfig').nixos_lua_lsp.setup({})
+                end
+
+                handle:close()
+            end
+        end
 
         require('mason').setup({})
         require('mason-lspconfig').setup({
