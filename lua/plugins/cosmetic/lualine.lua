@@ -10,12 +10,7 @@ return {
             {
                 require("noice").api.status.command.get,
                 cond = require("noice").api.status.command.has,
-                color = { fg = "#99d1db" },
-            },
-            {
-                require("noice").api.status.mode.get,
-                cond = require("noice").api.status.mode.has,
-                color = { fg = "#99d1db" },
+                color = { fg = "#e0def4" },
             },
         }
 
@@ -28,9 +23,9 @@ return {
                 lualine_a = {'mode'},
                 lualine_b = {'branch', 'diff', 'diagnostics'},
                 lualine_c = {'filename'},
-                lualine_x = {'filetype'},
-                lualine_y = noice_component,
-                lualine_z = {'location'}
+                lualine_x = noice_component,
+                lualine_y = {'filetype'},
+                lualine_z = {'location'},
             },
             inactive_sections = {
                 lualine_a = {},
@@ -38,7 +33,7 @@ return {
                 lualine_c = {'filename'},
                 lualine_x = {'location'},
                 lualine_y = {},
-                lualine_z = {}
+                lualine_z = {},
             },
             extensions = {
                 'oil'
