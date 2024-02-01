@@ -27,6 +27,15 @@ return {
     config = function()
         local lsp_zero = require("lsp-zero")
 
+        lsp_zero.set_preferences({
+            sign_icons = {
+                error = ' ',
+                warn = ' ',
+                hint = ' ',
+                info = ' ',
+            },
+        })
+
         lsp_zero.on_attach(function(_, bufnr)
             local opts = {buffer = bufnr, remap = false}
 
@@ -49,7 +58,7 @@ return {
             ]]
             local handle = io.popen(command)
             if handle ~= nil then
-                local distro = handle:read("*a");
+                local distro = handle:read("*a")
 
                 if distro:match("NixOS") ~= nil and vim.fn.executable('lua-language-server') == 1 then
                     local lsp_configurations = require('lspconfig.configs')
@@ -89,6 +98,11 @@ return {
                 {name = 'nvim_lua'},
                 {name = 'luasnip', keyword_length = 2},
                 {name = 'buffer', keyword_length = 3},
+            },
+            snippet = {
+                expand = function(args)
+                    require("luasnip").lsp_expand(args.body)
+                end,
             },
             formatting = lsp_zero.cmp_format(),
             mapping = cmp.mapping.preset.insert({

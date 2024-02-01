@@ -3,13 +3,17 @@ return {
     event = "VeryLazy",
     dependencies = {
         "MunifTanjim/nui.nvim",
-        "rcarriga/nvim-notify",
     },
     config = function()
-        require("notify").setup({
-            background_colour = "#26233a",
-        })
         require("noice").setup({
+            messages = {
+                view = false,
+                view_error = false,
+                view_warn = false,
+            },
+            popupmenu = {
+                backend = "cmp",
+            },
             lsp = {
                 override = {
                     ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
