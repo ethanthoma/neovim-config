@@ -1,10 +1,11 @@
 return {
-	'folke/trouble.nvim', 
+	'folke/trouble.nvim',
+    opts = {
+        auto_open = true,
+        auto_close = true,
+        use_diagnostic_signs = true,
+    },
 	config = function ()
-		require("trouble").setup {
-			use_diagnostic_signs = true
-		}
-
         vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
             {silent = true, noremap = true}
         )
