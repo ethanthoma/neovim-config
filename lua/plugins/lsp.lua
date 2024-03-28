@@ -90,7 +90,7 @@ return {
                 default_config = {
                     name = 'ocamllsp',
                     cmd = { 'ocamllsp' },
-                    filetypes = { 'ocaml', 'ml', 're' },
+                    filetypes = { 'ocaml', 'ml', 'reason' },
                     root_dir = require('lspconfig.util').root_pattern('*.opam')
                 }
             }
@@ -161,6 +161,9 @@ return {
                 { name = 'nvim_lua' },
                 { name = 'luasnip', keyword_length = 2 },
                 { name = 'buffer',  keyword_length = 3 },
+            },
+            experimental = {
+                ghost_text = true,
             },
             snippet = {
                 expand = function(args)
