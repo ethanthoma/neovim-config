@@ -161,6 +161,7 @@ return {
                 { name = 'nvim_lua' },
                 { name = 'luasnip', keyword_length = 2 },
                 { name = 'buffer',  keyword_length = 3 },
+                { name = "copilot", group_index = 2 },
             },
             experimental = {
                 ghost_text = true,
