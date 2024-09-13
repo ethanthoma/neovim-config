@@ -93,6 +93,23 @@ return {
             end
         end
 
+        if vim.fn.executable('nixpkgs-fmt')
+        then
+            vim.api.nvim_create_user_command('FormatAndSaveNix', function()
+                vim.cmd('write')
+                vim.cmd('silent !nixpkgs-fmt %')
+                vim.cmd('edit!')
+                vim.cmd('write')
+            end, {})
+
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                pattern = "*.nix",
+                callback = function()
+                    vim.cmd('FormatAndSaveNix')
+                end,
+            })
+        end
+
         if
             vim.fn.executable('ols') == 1 and
             not lsp_configurations.ols
