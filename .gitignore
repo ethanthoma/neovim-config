@@ -1,2 +1,3 @@
 # ignore generated packer code
 packer_compiled.lua
+crackboard.lua

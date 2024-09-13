@@ -1,6 +1,6 @@
 return {
     'VonHeikemen/lsp-zero.nvim',
-    branch = 'v2.x',
+    branch = 'v4.x',
     dependencies = {
         -- LSP Support
         { 'neovim/nvim-lspconfig' },
@@ -27,16 +27,7 @@ return {
     config = function()
         local lsp_zero = require("lsp-zero")
 
-        lsp_zero.set_preferences({
-            sign_icons = {
-                error = ' ',
-                warn = ' ',
-                hint = ' ',
-                info = ' ',
-            },
-        })
-
-        lsp_zero.on_attach(function(_, bufnr)
+        local lsp_attach = function(_, bufnr)
             local opts = { buffer = bufnr, remap = false }
 
             vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
@@ -51,7 +42,25 @@ return {
             vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 
             lsp_zero.buffer_autoformat()
-        end)
+        end
+
+        lsp_zero.extend_lspconfig({
+            sign_text = {
+                error = ' ',
+                warn = ' ',
+                hint = ' ',
+                info = ' ',
+            },
+            lsp_attach = lsp_attach,
+            capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        })
+
+        require("mason").setup()
+        require("mason-lspconfig").setup_handlers {
+            function(server_name)
+                require("lspconfig")[server_name].setup {}
+            end,
+        }
 
         local lsp_configurations = require('lspconfig.configs')
 
@@ -64,92 +73,40 @@ return {
             if handle ~= nil then
                 local distro = handle:read("*a")
 
-                if distro:match("NixOS") ~= nil and
-                    vim.fn.executable('lua-language-server') == 1 and
-                    not lsp_configurations.lua_lsp
-                then
-                    lsp_configurations.lua_lsp = {
-                        default_config = {
-                            name = 'lua-language-server',
-                            cmd = { 'lua-language-server' },
-                            filetypes = { 'lua' },
-                            root_dir = require('lspconfig.util').root_pattern('init.lua')
+                if distro:match("NixOS") ~= nil then
+                    if vim.fn.executable('lua-language-server') == 1 and
+                        not lsp_configurations.lua_lsp
+                    then
+                        lsp_configurations.lua_lsp = {
+                            default_config = {
+                                name = 'lua-language-server',
+                                cmd = { 'lua-language-server' },
+                                filetypes = { 'lua' },
+                                root_dir = require('lspconfig.util').root_pattern('init.lua')
+                            }
                         }
-                    }
-                    require('lspconfig').lua_lsp.setup({})
+                        require('lspconfig').lua_lsp.setup({})
+                    end
                 end
 
                 handle:close()
             end
         end
 
-        -- ocaml
-        if vim.fn.executable('ocamllsp')
+        if
+            vim.fn.executable('ols') == 1 and
+            not lsp_configurations.ols
         then
-            lsp_configurations.ocamllsp = {
+            lsp_configurations.ols = {
                 default_config = {
-                    name = 'ocamllsp',
-                    cmd = { 'ocamllsp' },
-                    filetypes = { 'ocaml', 'ml', 'reason' },
-                    root_dir = require('lspconfig.util').root_pattern('*.opam')
+                    name = 'ols',
+                    cmd = { 'ols' },
+                    filetypes = { 'odin' },
+                    root_dir = require('lspconfig.util').root_pattern('flake.nix')
                 }
             }
-            require('lspconfig').ocamllsp.setup({})
+            require('lspconfig').ols.setup({})
         end
-
-        -- gleam
-        if not lsp_configurations.gleam and
-            vim.fn.executable('gleam')
-        then
-            lsp_configurations.gleam = {
-                default_config = {
-                    name = 'gleam',
-                    cmd = { 'gleam', 'lsp' },
-                    filetypes = { 'gleam' },
-                    root_dir = require('lspconfig.util').root_pattern('gleam.toml')
-                }
-            }
-            require('lspconfig').gleam.setup({})
-
-            if not lsp_configurations.glas and
-                vim.fn.executable('glas')
-            then
-                lsp_configurations.glas = {
-                    default_config = {
-                        name = 'glas',
-                        cmd = { 'glas', '--stdio' },
-                        filetypes = { 'gleam' },
-                        root_dir = require('lspconfig.util').root_pattern('gleam.toml')
-                    }
-                }
-                require('lspconfig').glas.setup({})
-            end
-
-            vim.api.nvim_create_user_command('FormatAndSaveGleam', function()
-                vim.cmd('write')
-                vim.cmd('silent !gleam format %')
-                vim.cmd('edit!')
-                vim.cmd('write')
-            end, {})
-
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                pattern = "*.gleam",
-                callback = function()
-                    vim.cmd('FormatAndSaveGleam')
-                end,
-            })
-        end
-
-        require('mason').setup({})
-        require('mason-lspconfig').setup({
-            handlers = {
-                lsp_zero.default_setup,
-                lua_ls = function()
-                    local lua_opts = lsp_zero.nvim_lua_ls()
-                    require('lspconfig').lua_ls.setup(lua_opts)
-                end,
-            },
-        })
 
         local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -168,7 +125,7 @@ return {
             },
             snippet = {
                 expand = function(args)
-                    require("luasnip").lsp_expand(args.body)
+                    vim.snippet.expand(args.body)
                 end,
             },
             formatting = lsp_zero.cmp_format(),
