@@ -93,11 +93,11 @@ return {
             end
         end
 
-        if vim.fn.executable('nixpkgs-fmt')
+        if vim.fn.executable('nixfmt')
         then
             vim.api.nvim_create_user_command('FormatAndSaveNix', function()
                 vim.cmd('write')
-                vim.cmd('silent !nixpkgs-fmt %')
+                vim.cmd('silent !nixfmt %')
                 vim.cmd('edit!')
                 vim.cmd('write')
             end, {})
