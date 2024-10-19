@@ -74,6 +74,7 @@ return {
                 local distro = handle:read("*a")
 
                 if distro:match("NixOS") ~= nil then
+                    -- LUA
                     if vim.fn.executable('lua-language-server') == 1 and
                         not lsp_configurations.lua_lsp
                     then
@@ -87,42 +88,103 @@ return {
                         }
                         require('lspconfig').lua_lsp.setup({})
                     end
+
+                    -- ODIN
+                    if
+                        vim.fn.executable('ols') == 1 and
+                        not lsp_configurations.ols
+                    then
+                        lsp_configurations.ols = {
+                            default_config = {
+                                name = 'ols',
+                                cmd = { 'ols' },
+                                filetypes = { 'odin' },
+                                root_dir = require('lspconfig.util').root_pattern('flake.nix')
+                            }
+                        }
+                        require('lspconfig').ols.setup({})
+                    end
+
+                    -- RUST
+                    if vim.fn.executable('rust-analyzer') == 1 and
+                        not lsp_configurations.rust_analyzer
+                    then
+                        lsp_configurations.rust_analyzer = {
+                            default_config = {
+                                name = 'rust-analyzer',
+                                cmd = { 'rust-analyzer' },
+                                filetypes = { 'rust' },
+                                root_dir = require('lspconfig.util').root_pattern('flake.nix')
+                            }
+                        }
+                        require('lspconfig').rust_analyzer.setup({})
+                    end
+
+                    -- NIX
+                    if vim.fn.executable('nixfmt') == 1
+                    then
+                        vim.api.nvim_create_user_command('FormatAndSaveNix', function()
+                            vim.cmd('write')
+                            vim.cmd('silent !nixfmt %')
+                            vim.cmd('edit!')
+                            vim.cmd('write')
+                        end, {})
+
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            pattern = "*.nix",
+                            callback = function()
+                                vim.cmd('FormatAndSaveNix')
+                            end,
+                        })
+                    end
+
+                    -- PYTHON
+                    if vim.fn.executable('ruff') == 1 and
+                        not lsp_configurations.ruff_lsp
+                    then
+                        lsp_configurations.ruff_lsp = {
+                            default_config = {
+                                name = 'ruff-lsp',
+                                cmd = { 'ruff', 'server' },
+                                filetypes = { 'python' },
+                                root_dir = require('lspconfig.util').root_pattern('pyproject.toml')
+                            }
+                        }
+                        require('lspconfig').ruff_lsp.setup({})
+
+                        vim.api.nvim_create_user_command('FormatAndSavePython', function()
+                            vim.cmd('write')
+                            vim.cmd('silent !ruff check --fix %')
+                            vim.cmd('silent !ruff format %')
+                            vim.cmd('edit!')
+                            vim.cmd('write')
+                        end, {})
+
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            pattern = "*.py",
+                            callback = function()
+                                vim.cmd('FormatAndSavePython')
+                            end,
+                        })
+                    end
+
+                    if vim.fn.executable('pylyzer') == 1 and
+                        not lsp_configurations.pylyzer
+                    then
+                        lsp_configurations.pylyzer = {
+                            default_config = {
+                                name = 'pylyzer',
+                                cmd = { 'pylyzer', '--server' },
+                                filetypes = { 'python' },
+                                root_dir = require('lspconfig.util').root_pattern('pyproject.toml')
+                            }
+                        }
+                        require('lspconfig').pylyzer.setup({})
+                    end
                 end
 
                 handle:close()
             end
-        end
-
-        if vim.fn.executable('nixfmt')
-        then
-            vim.api.nvim_create_user_command('FormatAndSaveNix', function()
-                vim.cmd('write')
-                vim.cmd('silent !nixfmt %')
-                vim.cmd('edit!')
-                vim.cmd('write')
-            end, {})
-
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                pattern = "*.nix",
-                callback = function()
-                    vim.cmd('FormatAndSaveNix')
-                end,
-            })
-        end
-
-        if
-            vim.fn.executable('ols') == 1 and
-            not lsp_configurations.ols
-        then
-            lsp_configurations.ols = {
-                default_config = {
-                    name = 'ols',
-                    cmd = { 'ols' },
-                    filetypes = { 'odin' },
-                    root_dir = require('lspconfig.util').root_pattern('flake.nix')
-                }
-            }
-            require('lspconfig').ols.setup({})
         end
 
         local cmp = require('cmp')
