@@ -89,6 +89,21 @@ return {
                         require('lspconfig').lua_lsp.setup({})
                     end
 
+                    -- MARKDOWN
+                    if vim.fn.executable('harper-ls') == 1 and
+                        not lsp_configurations.harper_ls
+                    then
+                        lsp_configurations.harper_ls = {
+                            default_config = {
+                                name = 'harper-ls',
+                                cmd = { 'harper-ls' },
+                                filetypes = { 'markdown' },
+                                root_dir = require('lspconfig.util').root_pattern('flake.nix')
+                            }
+                        }
+                        require('lspconfig').harper_ls.setup({})
+                    end
+
                     -- ODIN
                     if
                         vim.fn.executable('ols') == 1 and
@@ -181,11 +196,81 @@ return {
                         }
                         require('lspconfig').pylyzer.setup({})
                     end
+
+                    -- GO
+                    if vim.fn.executable('gopls') == 1 and
+                        not lsp_configurations.gopls
+                    then
+                        lsp_configurations.gopls = {
+                            default_config = {
+                                name = 'gopls',
+                                cmd = { 'gopls', 'serve' },
+                                filetypes = { 'go' },
+                                root_dir = require('lspconfig.util').root_pattern('go.mod')
+                            }
+                        }
+                        require('lspconfig').gopls.setup({})
+                    end
+
+                    if vim.fn.executable('gofmt') == 1
+                    then
+                        vim.api.nvim_create_user_command('FormatAndSaveGo', function()
+                            vim.cmd('write')
+                            vim.cmd('silent !gofmt -w %')
+                            vim.cmd('edit!')
+                            vim.cmd('write')
+                        end, {})
+
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            pattern = "*.go",
+                            callback = function()
+                                vim.cmd('FormatAndSaveGo')
+                            end,
+                        })
+                    end
+
+                    if vim.fn.executable('templ') == 1 and
+                        not lsp_configurations.templ
+                    then
+                        lsp_configurations.templ = {
+                            default_config = {
+                                name = 'templ',
+                                cmd = { 'templ', 'lsp' },
+                                filetypes = { 'templ' },
+                                root_dir = require('lspconfig.util').root_pattern('go.mod')
+                            }
+                        }
+                        require('lspconfig').templ.setup({})
+
+                        vim.api.nvim_create_user_command('FormatAndSaveTempl', function()
+                            vim.cmd('write')
+                            vim.cmd('silent !templ fmt %')
+                            vim.cmd('edit!')
+                            vim.cmd('write')
+                        end, {})
+
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            pattern = "*.templ",
+                            callback = function()
+                                vim.cmd('FormatAndSaveTempl')
+                            end,
+                        })
+                    end
                 end
 
                 handle:close()
             end
         end
+
+        lsp_zero.format_on_save({
+            format_opts = {
+                async = false,
+                timeout_ms = 10000,
+            },
+            servers = {
+                ['gofmt'] = { 'go' },
+            }
+        })
 
         local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -197,7 +282,6 @@ return {
                 { name = 'nvim_lua' },
                 { name = 'luasnip', keyword_length = 2 },
                 { name = 'buffer',  keyword_length = 3 },
-                { name = "copilot", group_index = 2 },
             },
             experimental = {
                 ghost_text = true,
