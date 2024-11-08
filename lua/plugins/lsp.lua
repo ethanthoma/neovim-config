@@ -90,37 +90,36 @@ return {
             },
             rust_analyzer = {
                 executable = "rust-analyzer",
-                config = {}
             },
             harper_ls = {
                 executable = "harper-ls",
-                config = {}
             },
             ols = {
                 executable = "ols",
-                config = {}
             },
             pylyzer = {
                 executable = "pylyzer",
-                config = {}
             },
             ruff = {
                 executable = "ruff",
-                config = {}
             },
             gleam = {
                 executable = "gleam",
-                config = {}
             },
             ts_ls = {
                 executable = "typescript-language-server",
-                config = {}
             }
         }
 
         for server_name, settings in pairs(servers) do
             if vim.fn.executable(settings.executable) == 1 then
-                require("lspconfig")[server_name].setup(settings.config)
+                local config = settings.config
+
+                if config == nil then
+                    config = {}
+                end
+
+                require("lspconfig")[server_name].setup(config)
             end
         end
 
