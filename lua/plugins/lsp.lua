@@ -80,13 +80,13 @@ return {
                 executable = "lua-language-server",
                 config = {
                     settings = { Lua = { diagnostics = { globals = { "vim" } } } }
-                }
+                },
             },
             hls = {
                 executable = "haskell-language-server",
                 config = {
                     cmd = { "haskell-language-server", "--lsp" }
-                }
+                },
             },
             rust_analyzer = {
                 executable = "rust-analyzer",
@@ -108,7 +108,18 @@ return {
             },
             ts_ls = {
                 executable = "typescript-language-server",
-            }
+            },
+            superhtml = {
+                executable = "superhtml",
+            },
+            nil_ls = {
+                executable = "nil",
+                config = {
+                    ["nil"] = {
+                        formatting = { command = { "nixfmt" }, },
+                    },
+                },
+            },
         }
 
         for server_name, settings in pairs(servers) do
@@ -143,8 +154,8 @@ return {
                 rust = { "rustfmt" },
                 gleam = { "gleam" },
                 json = { "jq" },
-                typescript = { "prettierd" },
-                javascript = { "prettierd" },
+                javascript = { "biome" },
+                html = { "superhtml" },
             },
         })
 
