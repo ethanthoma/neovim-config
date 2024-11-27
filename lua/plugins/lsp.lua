@@ -120,6 +120,11 @@ return {
                     },
                 },
             },
+            nickel_ls = { executable = "nls" },
+            gopls = { executable = "gopls" },
+            golangci_lint_ls = { executable = "golangci-lint-langserver" },
+            templ = { executable = "templ" },
+            htmx = { executable = "htmx-lsp" },
         }
 
         for server_name, settings in pairs(servers) do
@@ -156,6 +161,16 @@ return {
                 json = { "jq" },
                 javascript = { "biome" },
                 html = { "superhtml" },
+                python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+                nickel = { "nickel" },
+            },
+
+            formatters = {
+                nickel = {
+                    command = "nickel",
+                    stdin = true,
+                    args = { "format" },
+                },
             },
         })
 
