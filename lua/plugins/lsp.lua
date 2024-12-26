@@ -88,30 +88,14 @@ return {
                     cmd = { "haskell-language-server", "--lsp" }
                 },
             },
-            rust_analyzer = {
-                executable = "rust-analyzer",
-            },
-            harper_ls = {
-                executable = "harper-ls",
-            },
-            ols = {
-                executable = "ols",
-            },
-            pylyzer = {
-                executable = "pylyzer",
-            },
-            ruff = {
-                executable = "ruff",
-            },
-            gleam = {
-                executable = "gleam",
-            },
-            ts_ls = {
-                executable = "typescript-language-server",
-            },
-            superhtml = {
-                executable = "superhtml",
-            },
+            rust_analyzer = { executable = "rust-analyzer", },
+            harper_ls = { executable = "harper-ls", },
+            ols = { executable = "ols", },
+            pylyzer = { executable = "pylyzer", },
+            ruff = { executable = "ruff", },
+            gleam = { executable = "gleam", },
+            ts_ls = { executable = "typescript-language-server", },
+            superhtml = { executable = "superhtml", },
             nil_ls = {
                 executable = "nil",
                 config = {
@@ -125,6 +109,8 @@ return {
             golangci_lint_ls = { executable = "golangci-lint-langserver" },
             templ = { executable = "templ" },
             htmx = { executable = "htmx-lsp" },
+            zls = { executable = "zls" },
+            wgsl_analyzer = { executable = "wgsl_analyzer" },
         }
 
         for server_name, settings in pairs(servers) do
@@ -163,6 +149,7 @@ return {
                 html = { "superhtml" },
                 python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
                 nickel = { "nickel" },
+                zig = { "zig" },
             },
 
             formatters = {
