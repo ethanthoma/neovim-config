@@ -28,6 +28,9 @@ return {
 
         -- Telescope extensions
         { "nvim-telescope/telescope-media-files.nvim" },
+
+        -- Lang Plugins
+        { "inko-lang/inko.vim" },
     },
     config = function()
         local lsp_zero = require("lsp-zero")
@@ -150,6 +153,7 @@ return {
                 python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
                 nickel = { "nickel" },
                 zig = { "zig" },
+                inko = { "inko" },
             },
 
             formatters = {
