@@ -5,10 +5,6 @@ return {
         -- LSP Support
         { "neovim/nvim-lspconfig" },
 
-        -- Formatters
-        { "lukas-reineke/lsp-format.nvim" },
-        { "stevearc/conform.nvim" },
-
         -- Linters
         { "mfussenegger/nvim-lint" },
 
@@ -19,13 +15,6 @@ return {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
 
-        -- Snippets
-        { "L3MON4D3/LuaSnip" },
-        { "hrsh7th/cmp-vsnip" },
-        { "hrsh7th/vim-vsnip" },
-        { "rafamadriz/friendly-snippets" },
-        { "saadparwaiz1/cmp_luasnip" },
-
         -- Telescope extensions
         { "nvim-telescope/telescope-media-files.nvim" },
 
@@ -33,9 +22,6 @@ return {
         { "inko-lang/inko.vim" },
     },
     config = function()
-        local lsp_zero = require("lsp-zero")
-        require("lsp-format").setup({})
-
         vim.api.nvim_create_autocmd("LspAttach", {
             desc = "LSP actions",
             callback = function(event)
@@ -57,10 +43,6 @@ return {
                 local client = id and vim.lsp.get_client_by_id(id)
                 if client == nil then
                     return
-                end
-
-                if client.supports_method("textDocument/formatting") then
-                    require("lsp-format").on_attach(client)
                 end
             end,
         })
@@ -114,6 +96,7 @@ return {
             htmx = { executable = "htmx-lsp" },
             zls = { executable = "zls" },
             wgsl_analyzer = { executable = "wgsl_analyzer" },
+            tailwindcss = { executable = "tailwindcss-language-server" },
         }
 
         for server_name, settings in pairs(servers) do
@@ -138,70 +121,6 @@ return {
             callback = function()
                 require("lint").try_lint()
             end,
-        })
-
-        -- Formatters
-
-        require("conform").setup({
-            formatters_by_ft = {
-                nix = { "nixfmt" },
-                rust = { "rustfmt" },
-                gleam = { "gleam" },
-                json = { "jq" },
-                javascript = { "biome" },
-                html = { "superhtml" },
-                python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
-                nickel = { "nickel" },
-                zig = { "zig" },
-                inko = { "inko" },
-            },
-
-            formatters = {
-                nickel = {
-                    command = "nickel",
-                    stdin = true,
-                    args = { "format" },
-                },
-            },
-        })
-
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            pattern = "*",
-            callback = function(args)
-                require("conform").format({ bufnr = args.buf })
-            end,
-        })
-
-        -- Snippets
-
-        local cmp = require("cmp")
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-        cmp.setup({
-            sources = {
-                { name = "path" },
-                { name = "nvim_lsp" },
-                { name = "nvim_lua" },
-                { name = "luasnip", keyword_length = 2 },
-                { name = "buffer",  keyword_length = 3 },
-            },
-            experimental = {
-                ghost_text = true,
-            },
-            snippet = {
-                expand = function(args)
-                    vim.snippet.expand(args.body)
-                end,
-            },
-            formatting = lsp_zero.cmp_format(),
-            mapping = cmp.mapping.preset.insert({
-                ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
-                ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
-                ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ["<Tab>"] = nil,
-                ["<S-Tab>"] = nil,
-            }),
         })
     end,
 }
