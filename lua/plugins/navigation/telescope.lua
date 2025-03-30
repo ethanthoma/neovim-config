@@ -6,7 +6,6 @@ return {
     },
     config = function()
         require("telescope").load_extension("fzf")
-        require("telescope").load_extension("media_files")
 
         local builtin = require("telescope.builtin")
         vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
