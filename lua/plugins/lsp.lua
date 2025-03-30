@@ -15,9 +15,6 @@ return {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-nvim-lua" },
 
-        -- Telescope extensions
-        { "nvim-telescope/telescope-media-files.nvim" },
-
         -- Lang Plugins
         { "inko-lang/inko.vim" },
     },
@@ -37,13 +34,6 @@ return {
                 vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
                 vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
                 vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-
-
-                local id = vim.tbl_get(event, "data", "client_id")
-                local client = id and vim.lsp.get_client_by_id(id)
-                if client == nil then
-                    return
-                end
             end,
         })
 

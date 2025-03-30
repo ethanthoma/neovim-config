@@ -1,9 +1,12 @@
 return {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+        { "nvim-lua/plenary.nvim" },
+    },
     config = function()
         require("telescope").load_extension("fzf")
+        require("telescope").load_extension("media_files")
 
         local builtin = require("telescope.builtin")
         vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
