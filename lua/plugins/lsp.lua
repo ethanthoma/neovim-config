@@ -73,11 +73,7 @@ return {
             superhtml = { executable = "superhtml", },
             nil_ls = {
                 executable = "nil",
-                config = {
-                    ["nil"] = {
-                        formatting = { command = { "nixfmt" }, },
-                    },
-                },
+                config = { ["nil"] = { formatting = { command = { "nixfmt" }, }, }, },
             },
             nickel_ls = { executable = "nls" },
             gopls = { executable = "gopls" },
@@ -87,6 +83,9 @@ return {
             zls = { executable = "zls" },
             wgsl_analyzer = { executable = "wgsl_analyzer" },
             tailwindcss = { executable = "tailwindcss-language-server" },
+            kotlin_language_server = { executable = "kotlin-language-server" },
+            pyre = { executable = "pyre" },
+            pyright = { executable = "pyright" },
         }
 
         for server_name, settings in pairs(servers) do
