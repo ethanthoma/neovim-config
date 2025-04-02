@@ -1,25 +1,22 @@
 return {
-    "VonHeikemen/lsp-zero.nvim",
-    branch = "v4.x",
+    "neovim/nvim-lspconfig",
     dependencies = {
-        -- LSP Support
-        { "neovim/nvim-lspconfig" },
-
         -- Linters
         { "mfussenegger/nvim-lint" },
 
         -- Autocompletion
         { "hrsh7th/nvim-cmp" },
-        { "hrsh7th/cmp-buffer" },
-        { "hrsh7th/cmp-path" },
         { "hrsh7th/cmp-nvim-lsp" },
-        { "hrsh7th/cmp-nvim-lua" },
-
-        -- Lang Plugins
-        { "inko-lang/inko.vim" },
     },
     config = function()
-        vim.api.nvim_create_autocmd("LspAttach", {
+        local lspconfig_defaults = require('lspconfig').util.default_config
+        lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+            'force',
+            lspconfig_defaults.capabilities,
+            require('cmp_nvim_lsp').default_capabilities()
+        )
+
+        vim.api.nvim_create_autocmd('LspAttach', {
             desc = "LSP actions",
             callback = function(event)
                 local opts = { buffer = event.buf }
@@ -64,7 +61,6 @@ return {
                 },
             },
             rust_analyzer = { executable = "rust-analyzer", },
-            harper_ls = { executable = "harper-ls", },
             ols = { executable = "ols", },
             pylyzer = { executable = "pylyzer", },
             ruff = { executable = "ruff", },
@@ -82,10 +78,29 @@ return {
             htmx = { executable = "htmx-lsp" },
             zls = { executable = "zls" },
             wgsl_analyzer = { executable = "wgsl_analyzer" },
-            tailwindcss = { executable = "tailwindcss-language-server" },
             kotlin_language_server = { executable = "kotlin-language-server" },
             pyre = { executable = "pyre" },
             pyright = { executable = "pyright" },
+            tailwindcss = {
+                executable = "tailwindcss-language-server",
+                config = {
+                    root_dir = function(fname)
+                        local root_file = {
+                            'tailwind.config.js',
+                            'tailwind.config.cjs',
+                            'tailwind.config.mjs',
+                            'tailwind.config.ts',
+                            'postcss.config.js',
+                            'postcss.config.cjs',
+                            'postcss.config.mjs',
+                            'postcss.config.ts',
+                            'flake.nix',
+                        }
+                        root_file = require('lspconfig.util').insert_package_json(root_file, 'tailwindcss', fname)
+                        return require('lspconfig.util').root_pattern(unpack(root_file))(fname)
+                    end,
+                },
+            },
         }
 
         for server_name, settings in pairs(servers) do
