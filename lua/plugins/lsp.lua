@@ -45,6 +45,14 @@ return {
             },
         })
 
+        -- Languages
+
+        vim.filetype.add({
+            extension = {
+                flix = "flix",
+            },
+        })
+
         -- LSPs
 
         local servers = {
@@ -101,18 +109,57 @@ return {
                     end,
                 },
             },
+            flix = {
+                executable = "flix",
+                default = {
+                    cmd = { "flix", "lsp" },
+                    filetypes = { "flix" },
+                    root_dir = function(fname)
+                        return vim.fs.dirname(vim.fs.find({ "flix.toml", "flix.jar" }, { path = fname, upward = true })
+                            [1]) or vim.fs.dirname(fname)
+                    end,
+                    settings = {},
+                },
+                config = {
+                    capabilities = vim.lsp.protocol.make_client_capabilities(),
+                    on_attach = function(client, bufnr)
+                        print("Flix LSP attached to buffer " .. bufnr)
+
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format { bufnr = bufnr, async = false, id = client.id }
+                            end,
+                        })
+                    end,
+                    flags = {},
+                },
+            },
+            metals = { executable = "metals", },
         }
 
         for server_name, settings in pairs(servers) do
             if vim.fn.executable(settings.executable) == 1 then
+                if not require("lspconfig.configs")[server_name] and settings.default then
+                    require("lspconfig.configs")[server_name] = {
+                        default_config = settings.default,
+                    }
+                end
+
                 local config = settings.config
 
                 if config == nil then
                     config = {}
                 end
 
+                if not require("lspconfig")[server_name] then
+                    goto continue
+                end
+
                 require("lspconfig")[server_name].setup(config)
             end
+
+            ::continue::
         end
 
         -- Linters
