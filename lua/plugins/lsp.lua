@@ -135,31 +135,47 @@ return {
                     flags = {},
                 },
             },
-            metals = { executable = "metals", },
+            ty = {
+                executable = "ty",
+                default = {
+                    cmd = { "ty", "server" },
+                    filetypes = { "python" },
+                    root_markers = { ".git", "pyproject.toml" },
+                },
+                config = {
+                    init_options = {
+                        settings = {}
+                    }
+                },
+            },
+            tinymist = {
+                executable = "tinymist",
+                default = {
+                    cmd = { "tinymist" },
+                    filetypes = { "typst" },
+                    settings = {
+                        -- ...
+                    },
+                },
+            },
         }
 
         for server_name, settings in pairs(servers) do
             if vim.fn.executable(settings.executable) == 1 then
-                if not require("lspconfig.configs")[server_name] and settings.default then
-                    require("lspconfig.configs")[server_name] = {
-                        default_config = settings.default,
-                    }
+                if settings.default then
+                    vim.lsp.config(server_name, settings.default)
                 end
 
-                local config = settings.config
+                if settings.config then
+                    local config = vim.lsp.config[server_name]
 
-                if config == nil then
-                    config = {}
+                    for k, v in pairs(settings.config) do config[k] = v end
+
+                    vim.lsp.config(server_name, config)
                 end
 
-                if not require("lspconfig")[server_name] then
-                    goto continue
-                end
-
-                require("lspconfig")[server_name].setup(config)
+                vim.lsp.enable(server_name)
             end
-
-            ::continue::
         end
 
         -- Linters
