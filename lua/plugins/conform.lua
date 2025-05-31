@@ -16,6 +16,8 @@ return {
             zig = { "zig" },
             inko = { "inko" },
             typst = { "typstyle" },
+            go = { "gci", "gofumpt" },
+            markdown = { "mdformat" },
         },
 
         formatters = {
@@ -23,6 +25,10 @@ return {
                 command = "nickel",
                 stdin = true,
                 args = { "format" },
+            },
+            mdformat = {
+                command = "mdformat",
+                args = { "--wrap", "80", "-" },
             },
         },
 
