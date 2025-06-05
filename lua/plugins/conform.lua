@@ -13,11 +13,12 @@ return {
             html = { "superhtml" },
             python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
             nickel = { "nickel" },
-            zig = { "zig" },
+            zig = { "zigfmt" },
             inko = { "inko" },
             typst = { "typstyle" },
             go = { "gci", "gofumpt" },
             markdown = { "mdformat" },
+            templ = { "templ" },
         },
 
         formatters = {

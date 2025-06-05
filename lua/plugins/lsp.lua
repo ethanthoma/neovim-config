@@ -47,6 +47,8 @@ return {
 
         -- Languages
 
+        vim.filetype.add({ extension = { templ = "templ" } })
+
         vim.filetype.add({
             extension = {
                 flix = "flix",
@@ -162,19 +164,19 @@ return {
 
         for server_name, settings in pairs(servers) do
             if vim.fn.executable(settings.executable) == 1 then
+                local config = {}
+
                 if settings.default then
-                    vim.lsp.config(server_name, settings.default)
+                    config = settings.default
                 end
 
                 if settings.config then
-                    local config = vim.lsp.config[server_name]
-
                     for k, v in pairs(settings.config) do config[k] = v end
-
-                    vim.lsp.config(server_name, config)
                 end
 
                 vim.lsp.enable(server_name)
+
+                vim.lsp.config(server_name, config)
             end
         end
 
