@@ -1,7 +1,7 @@
 return {
-  "folke/todo-comments.nvim",
-  dependencies = { "nvim-lua/plenary.nvim" },
-  opts = {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
         keywords = {
             FIX = {
                 icon = " ",
@@ -23,5 +23,5 @@ return {
             default = { "Identifier", "#9ccfd8" },
             test = { "Identifier", "#c4a7e7" }
         },
-  },
+    },
 }

@@ -15,10 +15,10 @@ return {
             nickel = { "nickel" },
             zig = { "zigfmt" },
             inko = { "inko" },
-            typst = { "typstyle" },
+            typst = { "typstyle", "mdformat" },
             go = { "gci", "gofumpt" },
             markdown = { "mdformat" },
-            templ = { "templ" },
+            templ = { "templ", "rustywind" },
         },
 
         formatters = {
