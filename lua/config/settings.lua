@@ -36,4 +36,4 @@ vim.opt.updatetime = 50
 
 -- 80 width columns
 vim.opt.colorcolumn = "80"
-
+vim.opt.synmaxcol = 300
