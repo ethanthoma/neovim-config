@@ -19,6 +19,8 @@ return {
             go = { "gci", "gofumpt" },
             markdown = { "mdformat" },
             templ = { "templ", "rustywind" },
+            php = { "mago_format", "mago_lint" },
+            kdl = { "kdlfmt" },
         },
 
         formatters = {
@@ -30,6 +32,17 @@ return {
             mdformat = {
                 command = "mdformat",
                 args = { "--wrap", "80", "-" },
+            },
+            mago_format = {
+                command = "mago",
+                args = { "format", "-i" },
+            },
+            mago_lint = {
+                command = "mago",
+                args = { "lint", "--fix", "$FILENAME" },
+            },
+            kdlfmt = {
+                args = { "format", "--kdl-version", "v2", "-" },
             },
         },
 
